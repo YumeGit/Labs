@@ -10,7 +10,7 @@ class Application(tk.Tk):
         super().__init__()
         self.title("Dataset Annotation App")
         self.geometry("800x600")
-        self.dataset_folder = "D:/Test/dataset322223"
+        self.dataset_folder = "D:\\Test\\dataset322223"
         self.class_label = ""
         self.instance_label = tk.Label(self, text="")
         self.instance_label.pack(pady=20)
