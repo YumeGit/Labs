@@ -1,2 +1,2 @@
 # Labs
- PD
+Репозиторий для предмета Programarea declarativă
