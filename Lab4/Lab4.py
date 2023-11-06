@@ -1,9 +1,10 @@
 import os
 import random
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import filedialog, messagebox
+import csv
 from PIL import Image, ImageTk
-from ann import create_annotation_file, load_data_from_csv, get_next_instance
+from ann import load_data_from_csv, get_next_instance
 
 class Application(tk.Tk):
     def __init__(self):
@@ -16,6 +17,8 @@ class Application(tk.Tk):
         self.instance_label.pack(pady=20)
         self.load_button = tk.Button(self, text="Load Dataset", command=self.load_dataset)
         self.load_button.pack(pady=20)
+        self.create_annotation_button = tk.Button(self, text="Create Annotation File", command=self.create_annotation_file)
+        self.create_annotation_button.pack(pady=10)
         self.next_zebra_button = tk.Button(self, text="Next Zebra", command=self.get_next_zebra)
         self.next_zebra_button.pack(pady=10)
         self.next_horse_button = tk.Button(self, text="Next Horse", command=self.get_next_horse)
@@ -50,6 +53,22 @@ class Application(tk.Tk):
     def get_next_horse(self):
         self.class_label = 'bay_horse'
         self.update_instance_label()
+
+    def create_annotation_file(self):
+        file_path = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("CSV Files", "*.csv")])
+        if file_path:
+            with open(file_path, 'w', newline='') as csvfile:
+                fieldnames = ['absolute_path', 'relative_path', 'class']
+                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                writer.writeheader()
+
+                for i in range(20):
+                    img_name = self.class_label + '_' + str(i).zfill(4) + '.jpg'
+                    absolute_path = os.path.join(self.dataset_folder, 'dataset_' + self.class_label, img_name)
+                    relative_path = os.path.relpath(absolute_path, self.dataset_folder)
+                    writer.writerow({'absolute_path': absolute_path, 'relative_path': relative_path, 'class': self.class_label})
+
+            messagebox.showinfo("Success", f"Annotation file '{file_path}' created successfully!")
 
 if __name__ == "__main__":
     app = Application()
