@@ -10,7 +10,7 @@ class Application(tk.Tk):
         super().__init__()
         self.title("Dataset Annotation App")
         self.geometry("800x600")
-        self.dataset_folder = "D:\\Test\\dataset322223"
+        self.dataset_folder = "D:/Test/dataset322223"
         self.class_label = ""
         self.instance_label = tk.Label(self, text="")
         self.instance_label.pack(pady=20)
@@ -20,6 +20,8 @@ class Application(tk.Tk):
         self.next_zebra_button.pack(pady=10)
         self.next_horse_button = tk.Button(self, text="Next Horse", command=self.get_next_horse)
         self.next_horse_button.pack(pady=10)
+        self.image_label = tk.Label(self)
+        self.image_label.pack(pady=20)
 
     def load_dataset(self):
         self.class_label = random.choice(['zebra', 'bay_horse'])
@@ -32,17 +34,14 @@ class Application(tk.Tk):
         if next_instance:
             self.instance_label.config(text=f'Next instance of {self.class_label}: {next_instance}')
             image_path = os.path.join(self.dataset_folder, next_instance)
-            self.display_image(image_path)
+            img = Image.open(image_path)
+            img = img.resize((400, 300), Image.BICUBIC)
+            img = ImageTk.PhotoImage(img)
+            self.image_label.config(image=img)
+            self.image_label.image = img
         else:
             self.instance_label.config(text=f'No available instances for {self.class_label}')
-
-    def display_image(self, image_path):
-        img = Image.open(image_path)
-        img = img.resize((400, 300), Image.BICUBIC)  # Используйте Image.BICUBIC для масштабирования
-        img = ImageTk.PhotoImage(img)
-        panel = tk.Label(self, image=img)
-        panel.image = img
-        panel.pack(pady=20)
+            self.image_label.config(image=None)
 
     def get_next_zebra(self):
         self.class_label = 'zebra'
